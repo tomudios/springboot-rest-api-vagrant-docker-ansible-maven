@@ -1,0 +1,21 @@
+---
+
+- name: Build the virtustream_tomlia RESTFUL API project
+  command: >
+    chdir=/apps/virtustream_restful mvn clean package spring-boot:repackage
+  tags: virtustream_restrul
+
+- name: Add the executable jar into init.d
+  file: src=/apps/virtustream_restful/target/virtustream_tomlia-0.0.1-SNAPSHOT.jar
+        dest=/etc/init.d/virtustream_tomlia_rest_api
+        owner="root" group="root" mode=0755 state=link
+  become: yes
+  become_user: root
+  tags: virtustream_restrul
+
+- name: Run the virtustream_tomlia RESTFUL API
+  become: yes
+  become_user: root
+  command: /etc/init.d/virtustream_tomlia_rest_api start
+  tags: virtustream_restrul
+  ignore_errors: yes
